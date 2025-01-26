@@ -12,17 +12,43 @@ const InventoryDashboard = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | 'none'>('none');
+
   const itemsPerPage = 10;
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+
+  const handleSort = () => {
+    if (sortOrder === 'none') {
+      setSortOrder('asc');
+    } else if (sortOrder === 'asc') {
+      setSortOrder('desc');
+    } else {
+      setSortOrder('none');
+    }
+  };
+
   const filteredItems = inventoryData.filter(
     (item: Inventory) =>
-      item.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      item.name.toLowerCase().includes(searchTerm.toLowerCase().trim()) &&
       (selectedCategory === '' || item.category === selectedCategory)
   );
 
-  const currentItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
+  const sortedItems = () => {
+    if (sortOrder === 'asc') {
+      return filteredItems.sort(
+        (a: Inventory, b: Inventory) => a.quantity - b.quantity
+      );
+    } else if (sortOrder === 'desc') {
+      return filteredItems.sort(
+        (a: Inventory, b: Inventory) => b.quantity - a.quantity
+      );
+    }
+    return filteredItems;
+  };
+
+  const currentItems = sortedItems().slice(indexOfFirstItem, indexOfLastItem);
 
   const totalFilteredItems = filteredItems.length;
   const countPages = Math.ceil(totalFilteredItems / itemsPerPage);
@@ -69,11 +95,11 @@ const InventoryDashboard = () => {
               <h2 className='text-3xl font-poppins font-semibold text-gray-800 mb-6'>
                 Inventory List
               </h2>
-              <div className='flex items-center'>
+              <div className='flex items-center gap-2'>
                 <input
                   type='text'
                   placeholder='Search'
-                  className='border border-gray-300 rounded-md px-3 py-2 mr-2 outline-none'
+                  className='border border-gray-300 rounded-md px-3 py-2  outline-none'
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
@@ -88,6 +114,16 @@ const InventoryDashboard = () => {
                     </option>
                   ))}
                 </select>
+                <button
+                  onClick={handleSort}
+                  className='border border-gray-300 rounded-md px-3 py-2'
+                >
+                  {sortOrder === 'none'
+                    ? 'Sort by Quantity'
+                    : sortOrder === 'asc'
+                    ? 'Sort by Quantity (Asc)'
+                    : 'Sort by Quantity (Desc)'}
+                </button>
               </div>
             </div>
             {filteredItems.length === 0 ? (
