@@ -3,7 +3,16 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    const inventory = await prisma.inventory.findMany();
+    const inventory = await prisma.inventory.findMany({
+      orderBy: [
+        {
+          updatedAt: 'desc',
+        },
+        {
+          createdAt: 'desc',
+        }
+      ],
+    });
     return new NextResponse(JSON.stringify(inventory), {
       status: 200,
       headers: { "Content-Type": "application/json" },
