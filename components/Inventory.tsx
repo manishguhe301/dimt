@@ -4,13 +4,13 @@ import Spinner from './Spinner';
 import { Pagination } from '@mui/material';
 import InventoryTable from './InventoryTable';
 import { Inventory } from '@prisma/client';
+import FilterComponent from './FilterComponent';
 
 const InventoryDashboard = () => {
   const [inventoryData, setInventoryData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
-  const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | 'none'>('none');
 
@@ -71,19 +71,8 @@ const InventoryDashboard = () => {
     }
   };
 
-  const fetchCategories = async () => {
-    try {
-      const response = await fetch('/api/categories');
-      const data = await response.json();
-      setCategories(data);
-    } catch (error) {
-      console.error('Error fetching categories:', error);
-    }
-  };
-
   useEffect(() => {
     fetchInventory();
-    fetchCategories();
   }, []);
 
   return (
@@ -96,33 +85,16 @@ const InventoryDashboard = () => {
                 Inventory List
               </h2>
               <div className='flex items-center gap-2'>
-                <input
-                  type='text'
-                  placeholder='Search'
-                  className='border border-gray-300 rounded-md px-3 py-2  outline-none'
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                <FilterComponent
+                  searchTerm={searchTerm}
+                  setSearchTerm={setSearchTerm}
+                  selectedCategory={selectedCategory}
+                  setSelectedCategory={setSelectedCategory}
+                  handleSort={handleSort}
+                  sortOrder={sortOrder}
                 />
-                <select
-                  className='border border-gray-300 rounded-md px-3 py-2'
-                  onChange={(e) => setSelectedCategory(e.target.value)}
-                >
-                  <option value=''>All Categories</option>
-                  {categories.map((category: string) => (
-                    <option key={category} value={category}>
-                      {category}
-                    </option>
-                  ))}
-                </select>
-                <button
-                  onClick={handleSort}
-                  className='border border-gray-300 rounded-md px-3 py-2'
-                >
-                  {sortOrder === 'none'
-                    ? 'Sort by Quantity'
-                    : sortOrder === 'asc'
-                    ? 'Sort by Quantity (Asc)'
-                    : 'Sort by Quantity (Desc)'}
+                <button className='bg-[#111827] hover:bg-gray-500 transition duration-300 text-white font-semibold py-2 px-4 rounded'>
+                  Add New Item
                 </button>
               </div>
             </div>
