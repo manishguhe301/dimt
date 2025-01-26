@@ -64,32 +64,38 @@ const InventoryDashboard = () => {
                 />
               </div>
             </div>
-            <div className='bg-white shadow-md rounded-lg overflow-hidden'>
-              <InventoryTable currentItems={currentItems} />
-            </div>
-            <Pagination
-              count={countPages}
-              page={currentPage}
-              onChange={(e, value) => setCurrentPage(value)}
-              color='primary'
-              shape='rounded'
-              sx={{
-                mt: 2,
-                justifyContent: 'center',
-                '& .MuiPaginationItem-root': {
-                  bgcolor: '#fff',
-                  color: '#111827',
-                },
-                '& .MuiPaginationItem-root.Mui-selected': {
-                  bgcolor: '#111827',
-                  color: '#fff',
-                },
-                '& .MuiPaginationItem-root.Mui-selected:hover': {
-                  bgcolor: '#485268',
-                  color: '#fff',
-                },
-              }}
-            />
+            {filteredItems.length === 0 ? (
+              <p className='text-center text-gray-600'>No items found</p>
+            ) : (
+              <>
+                <div className='bg-white shadow-md rounded-lg overflow-hidden'>
+                  <InventoryTable currentItems={currentItems} />
+                </div>
+                <Pagination
+                  count={countPages}
+                  page={currentPage}
+                  onChange={(e, value) => setCurrentPage(value)}
+                  color='primary'
+                  shape='rounded'
+                  sx={{
+                    mt: 2,
+                    justifyContent: 'center',
+                    '& .MuiPaginationItem-root': {
+                      bgcolor: '#fff',
+                      color: '#111827',
+                    },
+                    '& .MuiPaginationItem-root.Mui-selected': {
+                      bgcolor: '#111827',
+                      color: '#fff',
+                    },
+                    '& .MuiPaginationItem-root.Mui-selected:hover': {
+                      bgcolor: '#485268',
+                      color: '#fff',
+                    },
+                  }}
+                />
+              </>
+            )}
           </>
         ) : (
           <div className='flex flex-col justify-center items-center h-screen'>
