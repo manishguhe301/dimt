@@ -2,10 +2,17 @@
 import React, { useEffect, useState } from 'react';
 import Spinner from './Spinner';
 import { Inventory } from '@prisma/client';
+import { Pagination } from '@mui/material';
 
 const InventoryDashboard = () => {
   const [inventoryData, setInventoryData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = inventoryData.slice(indexOfFirstItem, indexOfLastItem);
 
   const fetchInventory = async () => {
     try {
@@ -35,7 +42,6 @@ const InventoryDashboard = () => {
               <table className='min-w-full table-auto'>
                 <thead className='bg-gray-800 text-white'>
                   <tr>
-                    <th className='px-4 py-3 text-left'>Sr.No</th>
                     <th className='px-4 py-3 text-left'>Item Name</th>
                     <th className='px-4 py-3 text-left'>Category</th>
                     <th className='px-4 py-3 text-left'>Quantity</th>
@@ -43,9 +49,8 @@ const InventoryDashboard = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {inventoryData.map((item: Inventory, index: number) => (
+                  {currentItems.map((item: Inventory) => (
                     <tr key={item.id} className='border-b'>
-                      <td className='px-4 py-3'>{index + 1}</td>
                       <td className='px-4 py-3'>{item.name}</td>
                       <td className='px-4 py-3'>{item.category}</td>
                       <td className='px-4 py-3'>{item.quantity}</td>
@@ -57,6 +62,25 @@ const InventoryDashboard = () => {
                 </tbody>
               </table>
             </div>
+            <Pagination
+              count={Math.ceil(inventoryData.length / itemsPerPage)}
+              page={currentPage}
+              onChange={(e, value) => setCurrentPage(value)}
+              color='primary'
+              shape='rounded'
+              sx={{
+                mt: 2,
+                justifyContent: 'center',
+                '& .MuiPaginationItem-root': {
+                  bgcolor: '#fff',
+                  color: '#111827',
+                },
+                '& .MuiPaginationItem-root.Mui-selected': {
+                  bgcolor: '#111827',
+                  color: '#fff',
+                },
+              }}
+            />
           </>
         ) : (
           <div className='flex flex-col justify-center items-center h-screen'>
