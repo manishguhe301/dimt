@@ -1,7 +1,36 @@
+'use client';
 import { Inventory } from '@prisma/client';
 import React from 'react';
+import CreateRoundedIcon from '@mui/icons-material/CreateRounded';
+import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
+import { useSnackbarContext } from '@/providers/SnackbarProvider';
 
-const InventoryTable = ({ currentItems }: { currentItems: Inventory[] }) => {
+const InventoryTable = ({
+  currentItems,
+  setInventoryData,
+}: {
+  currentItems: Inventory[];
+  setInventoryData: React.Dispatch<React.SetStateAction<Inventory[]>>;
+}) => {
+  const { showSnackbar } = useSnackbarContext();
+
+  const deleteItem = async (id: string) => {
+    try {
+      const response = await fetch(`/api/inventory?id=${id}`, {
+        method: 'DELETE',
+      });
+      if (response.ok) {
+        setInventoryData((prevData) =>
+          prevData.filter((item) => item.id !== id)
+        );
+        showSnackbar('Item deleted successfully!', 'success');
+      }
+    } catch (error) {
+      console.error('Error deleting item:', error);
+      showSnackbar('Failed to delete item.', 'error');
+    }
+  };
+
   return (
     <div className='min-h-[400px]'>
       <table className='min-w-full table-auto'>
@@ -31,7 +60,22 @@ const InventoryTable = ({ currentItems }: { currentItems: Inventory[] }) => {
                   </span>
                 )}
               </td>
-              <td className='px-4 py-3 text-blue-600 cursor-pointer'>Edit</td>
+              <td className='px-4 py-3 flex items-center gap-4'>
+                <p className='text-blue-600 cursor-pointer flex items-center gap-2'>
+                  Edit{' '}
+                  <CreateRoundedIcon color='inherit' sx={{ fontSize: 16 }} />
+                </p>
+                <p
+                  className='text-red-600 cursor-pointer flex items-center gap-2'
+                  onClick={() => deleteItem(item.id)}
+                >
+                  Delete
+                  <DeleteForeverRoundedIcon
+                    color='error'
+                    sx={{ fontSize: 16 }}
+                  />
+                </p>
+              </td>
             </tr>
           ))}
         </tbody>

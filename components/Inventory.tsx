@@ -7,7 +7,7 @@ import { Inventory } from '@prisma/client';
 import FilterComponent from './FilterComponent';
 
 const InventoryDashboard = () => {
-  const [inventoryData, setInventoryData] = useState([]);
+  const [inventoryData, setInventoryData] = useState<Inventory[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
@@ -103,7 +103,10 @@ const InventoryDashboard = () => {
             ) : (
               <>
                 <div className='bg-white shadow-md rounded-lg overflow-hidden'>
-                  <InventoryTable currentItems={currentItems} />
+                  <InventoryTable
+                    currentItems={currentItems}
+                    setInventoryData={setInventoryData}
+                  />
                 </div>
                 <Pagination
                   count={countPages}
@@ -141,5 +144,4 @@ const InventoryDashboard = () => {
     </div>
   );
 };
-
 export default InventoryDashboard;
