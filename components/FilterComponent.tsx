@@ -38,12 +38,12 @@ const FilterComponent = ({
       <input
         type='text'
         placeholder='Search'
-        className='border border-gray-300 rounded-md px-3 py-2  outline-none'
+        className='border border-gray-300 rounded-md px-3 py-2  outline-none max-md:w-1/3 max-sm:w-full'
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
       <select
-        className='border border-gray-300 rounded-md px-3 py-2'
+        className='border border-gray-300 rounded-md px-3 py-2 max-md:w-1/3 max-sm:w-full'
         onChange={(e) => setSelectedCategory(e.target.value)}
       >
         <option value=''>All Categories</option>
@@ -55,7 +55,7 @@ const FilterComponent = ({
       </select>
       <button
         onClick={handleSort}
-        className='border border-gray-300 rounded-md px-3 py-2'
+        className='border border-gray-300 rounded-md px-3 py-2 max-md:w-1/4 max-sm:w-full'
       >
         {sortOrder === 'none'
           ? 'Sort by Quantity'

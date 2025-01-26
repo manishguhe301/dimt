@@ -97,13 +97,14 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({
       );
 
       closeModal();
+      window.location.reload();
     } catch (error) {
       console.error('Error handling inventory item:', error);
       closeModal();
       showSnackbar('Failed to save inventory item.');
     }
   };
-  
+
   return (
     <ModalContext.Provider value={{ openModal, closeModal }}>
       {children}

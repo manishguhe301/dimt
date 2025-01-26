@@ -83,11 +83,11 @@ const InventoryDashboard = () => {
       <div className='max-w-7xl mx-auto'>
         {!loading && inventoryData.length > 0 ? (
           <>
-            <div className='flex justify-between items-center'>
-              <h2 className='text-3xl font-poppins font-semibold text-gray-800 mb-6'>
+            <div className='flex justify-end items-center mb-3 '>
+              <h2 className='text-3xl font-poppins font-semibold text-gray-800 hidden'>
                 Inventory List
               </h2>
-              <div className='flex items-center gap-2'>
+              <div className='flex items-center gap-2 max-md:flex-wrap max-md:w-full max-sm:flex-col max-sm:justify-center'>
                 <FilterComponent
                   searchTerm={searchTerm}
                   setSearchTerm={setSearchTerm}
@@ -97,7 +97,7 @@ const InventoryDashboard = () => {
                   sortOrder={sortOrder}
                 />
                 <button
-                  className='bg-[#111827] hover:bg-gray-500 transition duration-300 text-white font-semibold py-2 px-4 rounded flex items-center gap-2'
+                  className='bg-[#111827] hover:bg-gray-500 transition duration-300 text-white font-semibold py-2 px-4 rounded flex items-center gap-2 max-md:w-full justify-center'
                   onClick={() => openModal('add')}
                 >
                   <AddRoundedIcon sx={{ color: 'white', fontSize: '1.5rem' }} />

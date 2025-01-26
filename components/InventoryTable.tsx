@@ -27,6 +27,8 @@ const InventoryTable = ({
         );
         showSnackbar('Item deleted successfully!', 'success');
       }
+
+      window.location.reload();
     } catch (error) {
       console.error('Error deleting item:', error);
       showSnackbar('Failed to delete item.', 'error');
@@ -34,7 +36,7 @@ const InventoryTable = ({
   };
 
   return (
-    <div className='min-h-[400px]'>
+    <div className='min-h-[400px] max-sm:overflow-scroll'>
       <table className='min-w-full table-auto'>
         <thead className='bg-gray-800 text-white'>
           <tr>
@@ -54,10 +56,10 @@ const InventoryTable = ({
             >
               <td className='px-4 py-3'>{item.name}</td>
               <td className='px-4 py-3'>{item.category}</td>
-              <td className='px-4 py-3'>
+              <td className='px-4 py-3 max-sm:'>
                 {item.quantity}
                 {item.quantity < 10 && (
-                  <span className='ml-2 inline-block bg-red-200 text-red-800 text-xs font-semibold rounded-full px-2 py-1'>
+                  <span className='ml-2 inline-block bg-red-200 text-red-800 text-xs font-semibold rounded-full px-2 py-1 max-sm:text-[10px] max-sm:ml-0'>
                     Low Stock
                   </span>
                 )}
