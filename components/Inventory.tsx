@@ -3,16 +3,31 @@ import React, { useEffect, useState } from 'react';
 import Spinner from './Spinner';
 import { Pagination } from '@mui/material';
 import InventoryTable from './InventoryTable';
+import { Inventory } from '@prisma/client';
 
 const InventoryDashboard = () => {
   const [inventoryData, setInventoryData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState('');
   const itemsPerPage = 10;
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = inventoryData.slice(indexOfFirstItem, indexOfLastItem);
+  const filteredItems = inventoryData.filter((item: Inventory) =>
+    item.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const currentItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
+
+  const totalFilteredItems = filteredItems.length;
+  const countPages = Math.ceil(totalFilteredItems / itemsPerPage);
+
+  useEffect(() => {
+    if (currentPage > countPages && countPages > 0) {
+      setCurrentPage(countPages);
+    }
+  }, [filteredItems, currentPage, countPages]);
 
   const fetchInventory = async () => {
     try {
@@ -35,14 +50,25 @@ const InventoryDashboard = () => {
       <div className='max-w-7xl mx-auto'>
         {!loading && inventoryData.length > 0 ? (
           <>
-            <h2 className='text-3xl font-poppins font-semibold text-gray-800 mb-6'>
-              Inventory List
-            </h2>
+            <div className='flex justify-between items-center'>
+              <h2 className='text-3xl font-poppins font-semibold text-gray-800 mb-6'>
+                Inventory List
+              </h2>
+              <div className='flex items-center'>
+                <input
+                  type='text'
+                  placeholder='Search'
+                  className='border border-gray-300 rounded-md px-3 py-2 mr-2 outline-none'
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+            </div>
             <div className='bg-white shadow-md rounded-lg overflow-hidden'>
               <InventoryTable currentItems={currentItems} />
             </div>
             <Pagination
-              count={Math.ceil(inventoryData.length / itemsPerPage)}
+              count={countPages}
               page={currentPage}
               onChange={(e, value) => setCurrentPage(value)}
               color='primary'
@@ -56,6 +82,10 @@ const InventoryDashboard = () => {
                 },
                 '& .MuiPaginationItem-root.Mui-selected': {
                   bgcolor: '#111827',
+                  color: '#fff',
+                },
+                '& .MuiPaginationItem-root.Mui-selected:hover': {
+                  bgcolor: '#485268',
                   color: '#fff',
                 },
               }}
