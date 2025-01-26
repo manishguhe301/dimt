@@ -10,12 +10,16 @@ const InventoryDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('');
   const itemsPerPage = 10;
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const filteredItems = inventoryData.filter((item: Inventory) =>
-    item.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredItems = inventoryData.filter(
+    (item: Inventory) =>
+      item.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      (selectedCategory === '' || item.category === selectedCategory)
   );
 
   const currentItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
@@ -41,8 +45,19 @@ const InventoryDashboard = () => {
     }
   };
 
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch('/api/categories');
+      const data = await response.json();
+      setCategories(data);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+    }
+  };
+
   useEffect(() => {
     fetchInventory();
+    fetchCategories();
   }, []);
 
   return (
@@ -62,10 +77,21 @@ const InventoryDashboard = () => {
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
+                <select
+                  className='border border-gray-300 rounded-md px-3 py-2'
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                >
+                  <option value=''>All Categories</option>
+                  {categories.map((category: string) => (
+                    <option key={category} value={category}>
+                      {category}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
             {filteredItems.length === 0 ? (
-              <p className='text-center text-gray-600'>No items found</p>
+              <p className='text-center text-gray-600 py-4'>No items found</p>
             ) : (
               <>
                 <div className='bg-white shadow-md rounded-lg overflow-hidden'>
