@@ -3,6 +3,7 @@ import { Inter, Poppins } from 'next/font/google';
 import './globals.css';
 import Header from '@/components/Header';
 import { SnackbarProvider } from '@/providers/SnackbarProvider';
+import { ModalProvider } from '@/providers/ModalProvider';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -28,8 +29,10 @@ export default function RootLayout({
     <html lang='en'>
       <body className={`${inter.className} ${poppins.className} antialiased`}>
         <SnackbarProvider>
-          <Header />
-          {children}
+          <ModalProvider>
+            <Header />
+            {children}
+          </ModalProvider>
         </SnackbarProvider>
       </body>
     </html>
