@@ -5,6 +5,8 @@ import { Pagination } from '@mui/material';
 import InventoryTable from './InventoryTable';
 import { Inventory } from '@prisma/client';
 import FilterComponent from './FilterComponent';
+import { useGlobalModal } from '@/providers/ModalProvider';
+import AddRoundedIcon from '@mui/icons-material/AddRounded';
 
 const InventoryDashboard = () => {
   const [inventoryData, setInventoryData] = useState<Inventory[]>([]);
@@ -13,6 +15,7 @@ const InventoryDashboard = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | 'none'>('none');
+  const { openModal } = useGlobalModal();
 
   const itemsPerPage = 10;
 
@@ -93,7 +96,11 @@ const InventoryDashboard = () => {
                   handleSort={handleSort}
                   sortOrder={sortOrder}
                 />
-                <button className='bg-[#111827] hover:bg-gray-500 transition duration-300 text-white font-semibold py-2 px-4 rounded'>
+                <button
+                  className='bg-[#111827] hover:bg-gray-500 transition duration-300 text-white font-semibold py-2 px-4 rounded flex items-center gap-2'
+                  onClick={() => openModal('add')}
+                >
+                  <AddRoundedIcon sx={{ color: 'white', fontSize: '1.5rem' }} />
                   Add New Item
                 </button>
               </div>

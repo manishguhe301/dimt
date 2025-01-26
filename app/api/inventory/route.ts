@@ -55,3 +55,48 @@ export async function DELETE(request: NextRequest) {
     );
   }
 }
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const { id, name, category, quantity } = body;
+
+    if (!name || !category || quantity === undefined) {
+      return new NextResponse(
+        JSON.stringify({ error: "Missing required fields: name, category, or quantity" }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
+
+    let inventoryItem;
+
+    if (id) {
+      inventoryItem = await prisma.inventory.upsert({
+        where: { id },
+        create: { name, category, quantity },
+        update: { name, category, quantity },
+      });
+    } else {
+      inventoryItem = await prisma.inventory.create({
+        data: { name, category, quantity },
+      });
+    }
+
+    return new NextResponse(JSON.stringify(inventoryItem), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  } catch (error) {
+    console.error("Error handling inventory item:", error);
+    return new NextResponse(
+      JSON.stringify({ error: "Failed to handle inventory item" }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+  }
+}

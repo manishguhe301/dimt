@@ -4,6 +4,7 @@ import React from 'react';
 import CreateRoundedIcon from '@mui/icons-material/CreateRounded';
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
 import { useSnackbarContext } from '@/providers/SnackbarProvider';
+import { useGlobalModal } from '@/providers/ModalProvider';
 
 const InventoryTable = ({
   currentItems,
@@ -13,6 +14,7 @@ const InventoryTable = ({
   setInventoryData: React.Dispatch<React.SetStateAction<Inventory[]>>;
 }) => {
   const { showSnackbar } = useSnackbarContext();
+  const { openModal } = useGlobalModal();
 
   const deleteItem = async (id: string) => {
     try {
@@ -61,10 +63,14 @@ const InventoryTable = ({
                 )}
               </td>
               <td className='px-4 py-3 flex items-center gap-4'>
-                <p className='text-blue-600 cursor-pointer flex items-center gap-2'>
+                <p
+                  className='text-blue-600 cursor-pointer flex items-center gap-2'
+                  onClick={() => openModal('edit', item)}
+                >
                   Edit{' '}
                   <CreateRoundedIcon color='inherit' sx={{ fontSize: 16 }} />
                 </p>
+
                 <p
                   className='text-red-600 cursor-pointer flex items-center gap-2'
                   onClick={() => deleteItem(item.id)}
